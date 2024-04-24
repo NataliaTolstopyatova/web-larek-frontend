@@ -1,3 +1,8 @@
+export type ApiListResponse<Type> = {
+    total: number,
+    items: Type[]
+}
+
 export interface IProductItem {
     id: string;
     title: string;
@@ -25,15 +30,16 @@ export interface IOrderForm {
     address: string;
     email: string;
     phone: string;
-    total: string | number;
 }
 
 export interface IOrder extends IOrderForm {
     items: string[];
+    total: number;
 }
 
 export interface IOrderResult {
     id: string;
+    total: number;
 }
 
 export interface ILarekAPI {
@@ -69,15 +75,6 @@ export interface ISuccessActions {
 
 export interface ICardActions {
     onClick: (event: MouseEvent) => void;
-}
-
-export interface ICard {
-    id: string;
-    title: string;
-    category: string;
-    image: string;
-    price: number;
-    description: string;
 }
 
 export interface IPage {
