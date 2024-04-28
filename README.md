@@ -123,19 +123,22 @@ yarn build
 
 #### Методы
 
+  - setCatalog(items: Product[]) - установка данных в каталог; 
+  - setPreview(item: Product) - установка данных при предварительном просмотре товара;
+  - addProductToBasket(item: Product) - добавить товар в корзину; 
+  - removeProductFromBasket(item: Product) - удалить товар из корзины;
+  - get iBasket(): Product[] - получение данных товара, добавленных в корзину;
   - getTotal() - установка суммы товаров в корзине; 
-  - setCatalog(items: IProductItem[]) - установка данных в каталог; 
-  - setPreview(item: IProductItem) - установка данных при предварительном просмотре товара;
-  - addProduct(item: Product) - добавить товар к корзину; 
-  - get iBasket(): Product[] - получение данных товара, добавленных в корзину; 
-  - setProductToBasket(item: Product) - установка данных выбранного товара в корзину;
-  - removeProduct(item: Product) - удалить товар из корзины;
-  - removeProductToBasket(item: Product) - удаление данных выбранного товара из корзины; 
+  - set total(value: number) - установка суммы товаров в заказе; 
   - get statusBasketOfGoods(): boolean - получение состояния коризны (пустая или имеются товары);
-  - setOrderField(field: keyof IOrderForm, value: string) - установка данных поля заказа; 
-  - validateOrder() - валидация при оформлении заказа;
   - clearBasket() - ощичение корзины после офомления заказа;
-   
+  - addProductToOrder(item: Product) - добавить товар в заказ;
+  - removeProductFromOrder(item: Product) - удалить товар из заказа;
+  - validateOrder() - валидация первой формы при оформлении заказа;
+  - setOrderField(field: keyof IOrderForm, value: string) - установка данных поля первой формы заказа; 
+  - validateOrderContacts() - валидация второй формы при оформлении заказа; 
+  - setContactsField(field: keyof IOrderFormContacts, value: string) - установка данных поля второй формы заказа; 
+  
 ## Компоненты представления
 
 ### Page
@@ -174,15 +177,19 @@ yarn build
   - protected _id: string - id товара;
   - protected _title: HTMLElement - наименование товара;
   - protected _category: HTMLElement - категория товара;
-  - protected _image: HTMLImageElement - изображение товара; 
-  - protected _price: HTMLElement - цена товара; 
-  - protected _button: HTMLButtonElement - кнопки добавления/удаления товара в/из корзины; 
-  - protected _description: HTMLElement - описание товара. 
+  - protected _image?: HTMLImageElement - изображение товара; 
+  - protected _price: HTMLElement - цена товара;
+  - protected _description?: HTMLElement - описание товара; 
+  - protected _button?: HTMLButtonElement - кнопки добавления/удаления товара в/из корзины; 
+  - protected _index?: HTMLElement - порядковый номер товара в корзине;
+  
 
 #### Методы
 
   - set id(value: string) - устанавливает идентификационный номер товара;
   - get id(): string - возвращает идентификационный номер товара;
+  - set index(value: string) - устанавливает порядковый номер товара в корзине;
+  - get index(): string - возвращает порядковый номер товара в корзине;
   - set title(value: string) - устанавливает наименование товара;
   - get title(): string - возвращает наименование товара;
   - set image(value: string) - устанавливает изображение товара; 
@@ -190,6 +197,7 @@ yarn build
   - set category(value: string) - устанавливает категорию товара и присваивает соответсвующий класс CSS;
   - set price(value: number | null) - устанавливает цену товара;
   - get price(): number - возвращает цену товара;
+  - set button(value: string) - устанавливает текст кнопки.
 
 ### Modal
 Класс Modal представляет модальный компонент с методами открытия, закрытия и рендеринга.
@@ -271,8 +279,20 @@ yarn build
 
   - set payment(name: string) - устаналивает способ оплаты и класс активности в зависимости от нажатой кнопки;
   - set address(value: string) - устанавливает значение поля "адрес";
-  - set phone(value: string) - устанавливает значение поля "телефон";
-  - set email(value: string) - устанавливает значение поля "email".
+
+### OrderContacts
+Класс OrderContacts — это компонент, который предоставляет модальное окно оформления заказа с указанием email и телефона.
+
+#### Конструктор
+
+Конструктор инициализирует компонент заказа. Принимает два аругмента:
+  - container: HTMLFormElement -  это элемент HTMLElement, представляющий элемент контейнера, в котором будет отображаться компоненты необоходимые для офрмления заказа.
+  - events: IEvents - параметр events является экземпляром класса EventEmitter, который используется для генерации и прослушивания событий внутри приложения.
+
+#### Методы
+
+  - set email(value: string) - устанавливает значение поля "email";
+  - set phone(value: string) - устанавливает значение поля "телефон".
 
 ### Success
 Класс Success — это компонент, который отображает сообщение об успешном оформлении заказа с общим значением и кнопкой закрытия.
@@ -299,13 +319,13 @@ yarn build
   - preview:changed - отображение данных товара при предварительном просмотре;
   - card:add - добавление товара в корзину из открытого модального окна; 
   - card:remove - удаление товара из корзины из открытого модального окна; 
-  - basket:open - открытие корзины; 
+  - card:check - смена статуса кнопки покупки в модальном окне;
+  - basket:open - открытие корзины, отображение добавленного товара; 
   - basket:remove - удаление товара из корзины;
   - order:open - переход к оформлению заказа;
-  - payment:change - выбор способа оплаты; 
-  - order:submit - заполнение формы заказа (адрес). При успешном заполнении, переход к следующей форме заказа; 
-  - contacts:submit - заполнение формы заказа (телефон и email). При успешном заполнении, переход к оплате заказа;
+  - payment:change - выбор способа оплаты. Проверка заполнения поля- адрес. При успешном заполнении, переход к следующей форме заказа; 
+  - order:submit - заполнение формы заказа (телефон и email). При успешном заполнении, переход к оплате заказа; 
   - formErrors:change - проверка валидации форм;
-  - success:submit - возврат к списку товаров и очищение корзины после успешного оформления заказа;
+  - contacts:submit - возврат к списку товаров и очищение корзины после успешного оформления заказа;
   - modal:open - блокировка прокрутки страницы если открыто модальное окно;
   - modal:close - разблокировка прокрутки страницы если закрыто модальное окно;
