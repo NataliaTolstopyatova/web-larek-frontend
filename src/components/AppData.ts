@@ -1,5 +1,12 @@
-import {Model} from "./base/model";
-import {FormErrors, IAppState, Product, IOrder, IOrderForm, IOrderFormContacts} from "../types/index";
+import { Model } from './base/model';
+import {
+	FormErrors,
+	IAppState,
+	Product,
+	IOrder,
+	IOrderForm,
+	IOrderFormContacts,
+} from '../types/index';
 
 export type CatalogChangeEvent = {
 	catalog: Product[];
@@ -21,14 +28,14 @@ export class AppFunctionality extends Model<IAppState> {
 	button: HTMLButtonElement;
 
 	setCatalog(items: Product[]) {
-        this.catalog = items;
-        this.emitChanges('items:changed', { catalog: this.catalog });
-    }
+		this.catalog = items;
+		this.emitChanges('items:changed', { catalog: this.catalog });
+	}
 
-    setPreview(item: Product) {
-        this.preview = item.id;
-        this.emitChanges('preview:changed', item);
-    }
+	setPreview(item: Product) {
+		this.preview = item.id;
+		this.emitChanges('preview:changed', item);
+	}
 
 	addProductToBasket(item: Product) {
 		this.basket.push(item);
@@ -37,7 +44,7 @@ export class AppFunctionality extends Model<IAppState> {
 	removeProductFromBasket(item: Product) {
 		const index = this.basket.indexOf(item);
 		if (index >= 0) {
-		  this.basket.splice( index, 1 );
+			this.basket.splice(index, 1);
 		}
 	}
 
@@ -46,7 +53,10 @@ export class AppFunctionality extends Model<IAppState> {
 	}
 
 	getTotal() {
-		return this.order.items.reduce((a, c) => a + this.catalog.find(it => it.id === c).price, 0);
+		return this.order.items.reduce(
+			(a, c) => a + this.catalog.find((it) => it.id === c).price,
+			0
+		);
 	}
 
 	set total(value: number) {
@@ -62,16 +72,23 @@ export class AppFunctionality extends Model<IAppState> {
 		this.order.items = [];
 	}
 
+	clearOrderForm() {
+		this.order.payment = '';
+		this.order.address = '';
+		this.order.email = '';
+		this.order.phone = '';
+	}
+
 	addProductToOrder(item: Product) {
 		if (item.price !== null) {
 			this.order.items.push(item.id);
 		}
 	}
-	  
+
 	removeProductFromOrder(item: Product) {
 		const index = this.order.items.indexOf(item.id);
 		if (index >= 0) {
-		  this.order.items.splice( index, 1 );
+			this.order.items.splice(index, 1);
 		}
 	}
 
@@ -80,7 +97,7 @@ export class AppFunctionality extends Model<IAppState> {
 		if (!this.order.payment)
 			errors.payment = 'Необходимо указать способ оплаты';
 		if (!this.order.address) {
-		  errors.address = 'Необходимо указать адрес';
+			errors.address = 'Необходимо указать адрес';
 		}
 
 		this.formErrors = errors;
@@ -90,31 +107,31 @@ export class AppFunctionality extends Model<IAppState> {
 
 	setOrderField(field: keyof IOrderForm, value: string) {
 		this.order[field] = value;
-	
+
 		if (this.validateOrder()) {
 			this.events.emit('order:ready', this.order);
-		} 
+		}
 	}
 
 	validateOrderContacts() {
-		  const errors: typeof this.formErrors = {};
-		  if (!this.order.email) {
-			  errors.email = 'Необходимо указать email';
-		  }
-		  if (!this.order.phone) {
-			  errors.phone = 'Необходимо указать телефон';
-		  }
-		  
-		  this.formErrors = errors;
-		  this.events.emit('formErrors:change', this.formErrors);
-		  return Object.keys(errors).length === 0;
+		const errors: typeof this.formErrors = {};
+		if (!this.order.email) {
+			errors.email = 'Необходимо указать email';
+		}
+		if (!this.order.phone) {
+			errors.phone = 'Необходимо указать телефон';
+		}
+
+		this.formErrors = errors;
+		this.events.emit('formErrors:change', this.formErrors);
+		return Object.keys(errors).length === 0;
 	}
 
 	setContactsField(field: keyof IOrderFormContacts, value: string) {
 		this.order[field] = value;
-	
+
 		if (this.validateOrderContacts()) {
 			this.events.emit('order:ready', this.order);
-		} 
+		}
 	}
 }

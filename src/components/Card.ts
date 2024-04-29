@@ -1,10 +1,10 @@
-import {ensureElement} from "../utils/utils";
-import {settings} from "../utils/constants";
-import {Component} from "./base/component";
-import {ICardActions, Product} from "../types/index";
+import { ensureElement } from '../utils/utils';
+import { settings } from '../utils/constants';
+import { Component } from './base/component';
+import { ICardActions, Product } from '../types/index';
 
-export class Card extends Component<Product>  {
-	protected _id: string
+export class Card extends Component<Product> {
+	protected _id: string;
 	protected _title: HTMLElement;
 	protected _category: HTMLElement;
 	protected _image?: HTMLImageElement;
@@ -24,13 +24,13 @@ export class Card extends Component<Product>  {
 		this._index = container.querySelector('.basket__item-index');
 
 		if (actions?.onClick) {
-		if (this._button) {
-			this._button.addEventListener('click', actions.onClick);
-		} else {
-			container.addEventListener('click', actions.onClick);
+			if (this._button) {
+				this._button.addEventListener('click', actions.onClick);
+			} else {
+				container.addEventListener('click', actions.onClick);
+			}
 		}
-		}
-  	}
+	}
 
 	set id(value: string) {
 		this.container.dataset.id = value;
@@ -40,12 +40,8 @@ export class Card extends Component<Product>  {
 		return this.container.dataset.id || '';
 	}
 
-  	set index(value: string) {
-		this._index.textContent = value;
-	}
-
-	get index(): string {
-		return this._index.textContent || '';
+	set index(value: number) {
+		this.setText(this._index, value);
 	}
 
 	set title(value: string) {
@@ -57,35 +53,37 @@ export class Card extends Component<Product>  {
 	}
 
 	set image(value: string) {
-		this.setImage(this._image, value, this.title)
+		this.setImage(this._image, value, this.title);
 	}
 
 	set description(value: string | string[]) {
-    	if (Array.isArray(value)) {
-			this._description.replaceWith(...value.map(str => {
-				const descTemplate = this._description.cloneNode() as HTMLElement;
-				this.setText(descTemplate, str);
-				return descTemplate;
-			}));
-    	} else {
-        	this.setText(this._description, value);
-    	}
-  	}
+		if (Array.isArray(value)) {
+			this._description.replaceWith(
+				...value.map((str) => {
+					const descTemplate = this._description.cloneNode() as HTMLElement;
+					this.setText(descTemplate, str);
+					return descTemplate;
+				})
+			);
+		} else {
+			this.setText(this._description, value);
+		}
+	}
 
 	set category(value: string) {
-		const colorClass = settings.categoryColors[value];
+		const colorClass = settings[value];
 		if (colorClass) {
-		  this._category.classList.add(colorClass);
+			this._category.classList.add(colorClass);
 		}
 		this.setText(this._category, value);
 	}
 
 	set price(value: number | null) {
 		if (value === null) {
-		this.setText(this._price, 'Бесценно');
+			this.setText(this._price, 'Бесценно');
 		} else {
-		this.setText(this._price, `${value} синапсов`);
-    	}
+			this.setText(this._price, `${value} синапсов`);
+		}
 	}
 
 	get price(): number {

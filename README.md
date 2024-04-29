@@ -132,6 +132,7 @@ yarn build
   - set total(value: number) - установка суммы товаров в заказе; 
   - get statusBasketOfGoods(): boolean - получение состояния коризны (пустая или имеются товары);
   - clearBasket() - ощичение корзины после офомления заказа;
+  - clearOrderForm() - ощичение данных пользователя после офомления заказа;
   - addProductToOrder(item: Product) - добавить товар в заказ;
   - removeProductFromOrder(item: Product) - удалить товар из заказа;
   - validateOrder() - валидация первой формы при оформлении заказа;
@@ -188,8 +189,7 @@ yarn build
 
   - set id(value: string) - устанавливает идентификационный номер товара;
   - get id(): string - возвращает идентификационный номер товара;
-  - set index(value: string) - устанавливает порядковый номер товара в корзине;
-  - get index(): string - возвращает порядковый номер товара в корзине;
+  - set index(value: number) - устанавливает порядковый номер товара в корзине;
   - set title(value: string) - устанавливает наименование товара;
   - get title(): string - возвращает наименование товара;
   - set image(value: string) - устанавливает изображение товара; 
